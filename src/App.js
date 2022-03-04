@@ -26,7 +26,11 @@ function reducer(state, { type, payload }) {
         return state;
       }
 
-      if (payload.digit === "." && state.currentOperand.includes(".")) {
+      if (payload.digit === "." && state.currentOperand == null) {
+        return state;
+      }
+
+      if (payload.digit === "." && state.currentOperand?.includes(".")) {
         return state;
       }
 
@@ -63,7 +67,12 @@ function reducer(state, { type, payload }) {
       };
 
     case ACTIONS.CLEAR:
-      return {};
+      return {
+        ...state,
+        currentOperand: "0",
+        previousOperand: null,
+        operation: null,
+      };
 
     case ACTIONS.DELETE_DIGIT:
       if (state.overwrite) {
@@ -136,10 +145,8 @@ function formatOperand(operand) {
 }
 
 function App() {
-  const [{ currentOperand, previousOperand, operation }, dispatch] = useReducer(
-    reducer,
-    {}
-  );
+  const [{ currentOperand = "0", previousOperand, operation }, dispatch] =
+    useReducer(reducer, {});
 
   return (
     <div id="app">
